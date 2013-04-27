@@ -50,8 +50,8 @@
 				});
 
 				$('#nextlvl').click(function(){
-					curLevel++;
-					if( typeof(rooms[curLevel]) != 'undefined'){
+					if( typeof(rooms[curLevel+1]) != 'undefined'){
+						curLevel++;
 						room = new Room(rooms[curLevel]);
 					} else {
 						$('#endoflvls').show();
