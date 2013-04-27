@@ -1,29 +1,41 @@
-var Room = function(x,y){
-	this.x = x;
-	this.y = y;
+var Room = function(rm){
+	this.x = rm.dim[0];
+	this.y = rm.dim[1];
+	this.ex = rm.exit[0];
+	this.ey = rm.exit[1];
+	this._finished = false;
 
 	drawRoom(this);
+
+	this.finish = function(){
+		this._finished = true;
+	};
 
 	this.items = [];
 	this.items[0] = [];
 	for( var i = 1; i <= this.x; i++ ){
 		this.items[i] = [];
 	}
-	this.items[x+1] = [];
+	this.items[this.x+1] = [];
 
 
-	this.player = new Player(this,1,3,'p1');
+	this.player = new Player(this,rm.spawn[0],rm.spawn[1],'p1');
 	this.boxes = [];
-	this.boxes.push(new Box(this,2,3,'b1'));
-	this.boxes.push(new Box(this,3,2,'b2'));
-	this.boxes.push(new Box(this,6,3,'b3'));
+	var _this = this;
+	$.each(rm.boxes, function(i,b){
+		_this.boxes.push(new Box(_this,b[0],b[1],'b'+i));
+	});
 	this.pillars = [];
-	this.pillars.push(new Pillar(this,3,3,'w1'));
-	this.pillars.push(new Pillar(this,6,5,'w2'));
-	this.pillars.push(new Pillar(this,5,5,'w3'));
+	$.each(rm.pillars, function(i,w){
+		_this.pillars.push(new Pillar(_this,w[0],w[1],'w'+i));
+	});
 
 	this.checkMove = function(){
-		if( this.player.moving ){ return false; }
+		if( this.player.moving || this._finished ){ return false; }
+		if( this.player.x == this.ex && this.player.y == this.ey ){
+			this.finish();
+			return false;
+		}
 		var rm = this;
 		$.each([37,38,39,40,0], function(i,v){
 			if( keysDown[v] ){

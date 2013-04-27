@@ -3,6 +3,12 @@
 		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 		<script src="/js/support.js"></script>
 		<script>
+			var rm1 = { 'boxes': [[2,2]],
+				'pillars': [[1,1],[1,3],[2,1]],
+				'exit': [3,2],
+				'dim': [3,3],
+				'spawn': [1,2]
+			};
 			var room;
 			var keysDown = [];
 			keysDown[32] = false;
@@ -40,7 +46,7 @@
 		<script src="/js/room.js"></script>
 		<script>
 			$(document).ready(function(){
-				room = new Room(7,5);
+				room = new Room(rm1);
 			});
 
 			// l 37, u 38, r 39, d 40, space 32
@@ -77,9 +83,22 @@
 				height: 40px;
 				width: 40px;
 			}
+
+			#cache {
+				height: 0px;
+				width: 0px;
+				overflow: hidden;
+			}
+
+			li.exit {
+				background: url(/imgs/exit.gif);
+				background-size: 100% 100%;
+			}
 		</style>
 	</head>
 	<body>
+		<h1>Escape!</h1>
+		<p>Use arrows to move, and the Space bar to grab on to the box in front of you.</p>
 		<div id="cargo-hold"></div>
 		<div id="cache"></div>
 	</body>

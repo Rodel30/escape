@@ -9,6 +9,7 @@ var drawRoom = function(r){
 		}
 		$hold.append($col);
 	}
+	$('#'+r.ex +'x'+ r.ey).addClass('exit');
 };
 
 var drawItem = function(p){
