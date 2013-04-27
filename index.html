@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+		<script>
+			var rooms = [];
+
+			$(document).ready(function(){
+				$hold = $('#cargo-hold');
+				var drawRoom = function(r){
+					$hold.empty();
+					for( var i = 1; i <= r.x; i++ ){
+						$col = $('<ul />');
+						for( var j = 1; j <= r.y; j++ ){
+							$cell = $('<li />').attr('id', i + 'x' + j);
+							$col.append($cell);
+						}
+						$hold.append($col);
+					}
+				};
+
+				var drawItem = function(p){
+					var $p = $('img#'+p.id);
+					var $cell = $('#'+p.x+'x'+p.y);
+					$p.attr('src', p.img());
+					$cell.append($p);
+				};
+
+				var cacheImg = function(src, id){
+					var i = $('<img />').attr('src', src).attr('id', id);
+					$('#cache').append(i);
+				};
+
+				var Item = function(){
+					this.init = function(r,x,y,id){
+						this.x = x;
+						this.y = y;
+						this.id = id;
+						this.r = r;
+
+						this.r.items[this.x][this.y] = this;
+
+						cacheImg(this.img(), this.id);
+						drawItem(this);
+					}
+
+					this.move = function(dir){
+						switch(dir){
+							case 'u':
+								this.y--;
+								break;
+							case 'd':
+								this.y++;
+								break;
+							case 'l':
+								this.x--;
+								break;
+							case 'r':
+								this.x++;
+								break;
+						}
+
+						drawItem(this);
+					}
+
+					this.canMove = function(dir){
+						var atEdge = true;
+						var objAbove = true;
+						switch(dir){
+							case 'u':
+								atEdge = this.y <= 1;
+								objAbove = typeof(this.r.items[this.x][this.y-1]) != 'undefined';
+								break;
+							case 'd':
+								atEdge = this.y >= this.r.y;
+								objAbove = typeof(this.r.items[this.x][this.y+1]) != 'undefined';
+								break;
+							case 'l':
+								atEdge = this.x <= 1;
+								objAbove = typeof(this.r.items[this.x-1][this.y]) != 'undefined';
+								break;
+							case 'r':
+								atEdge = this.x >= this.r.x;
+								objAbove = typeof(this.r.items[this.x+1][this.y]) != 'undefined';
+								break;
+						}
+						return !(atEdge || objAbove);
+					}
+				}
+
+				var Player = function(r,x,y,id){
+					this.dir = 'east';
+					this.motion = 'stand';
+					this.holding = false;
+					this._moving = false;
+
+					this.img = function(){
+						return '/imgs/hero/' + this.motion +'/'+ this.dir + '.gif';
+					}
+
+					this.init(r,x,y,id);
+				}
+				Player.prototype = new Item();
+				Player.prototype.constructor = Player;
+
+				var Pillar = function(r,x,y,id){
+					this.img = function(){
+						return '/imgs/pillar.gif';
+					}
+					this.init(r,x,y,id);
+				}
+				Pillar.prototype = new Item();
+				Pillar.prototype.constructor = Pillar;
+
+				var Box = function(r,x,y,id){
+					this.img = function(){
+						return '/imgs/box.gif';
+					}
+					this.init(r,x,y,id);
+				}
+				Box.prototype = new Item();
+				Box.prototype.constructor = Box;
+
+				var Room = function(x,y){
+					this.x = x;
+					this.y = y;
+
+					drawRoom(this);
+
+					this.items = [];
+					for( var i = 1; i <= this.x; i++ ){
+						this.items[i] = [];
+					}
+
+
+					this.player = new Player(this,1,3,'p1');
+					this.boxes = [];
+					this.boxes.push(new Box(this,2,3,'b1'));
+					this.boxes.push(new Box(this,3,2,'b2'));
+					this.boxes.push(new Box(this,6,3,'b3'));
+					this.pillars = [];
+					this.pillars.push(new Pillar(this,3,3,'w1'));
+					this.pillars.push(new Pillar(this,6,5,'w2'));
+					this.pillars.push(new Pillar(this,5,5,'w3'));
+
+
+				}
+
+				var r1 = new Room(7,5);
+				rooms.push(r1);
+			});
+		</script>
+
+		<style>
+			#cargo-hold ul {
+				list-style: none;
+				float: left;
+				margin: 0;
+				padding: 0;
+				background: url(/imgs/floor.gif);
+			}
+			#cargo-hold ul li {
+				padding:0;
+				margin:0;
+			}
+			#cargo-hold ul li, img {
+				height: 40px;
+				width: 40px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="cargo-hold"></div>
+		<div id="cache"></div>
+	</body>
+</html>
