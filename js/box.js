@@ -1,4 +1,4 @@
-var Box = function(r,x,y,id){
+var Box = function box(r,x,y,id){
 	this.img = function(){
 		return '/imgs/box.gif';
 	}

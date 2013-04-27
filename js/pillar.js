@@ -1,4 +1,4 @@
-var Pillar = function(r,x,y,id){
+var Pillar = function pillar(r,x,y,id){
 	this.img = function(){
 		return '/imgs/pillar.gif';
 	}

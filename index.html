@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+		<script src="/js/support.js"></script>
 		<script>
 			var room;
 			var keysDown = [];
@@ -14,6 +15,22 @@
 			dirMap[38] = 'u';
 			dirMap[39] = 'r';
 			dirMap[40] = 'd';
+			var isOppDir = function(d1, d2){
+				switch(d1){
+					case 'u':
+						return d2 == 'd';
+						break;
+					case 'd':
+						return d2 == 'u';
+						break;
+					case 'l':
+						return d2 == 'r';
+						break;
+					case 'r':
+						return d2 == 'l';
+						break;
+				}
+			}
 		</script>
 		<script src="/js/renderer.js"></script>
 		<script src="/js/item.js"></script>

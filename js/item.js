@@ -1,4 +1,4 @@
-var Item = function(){
+var Item = function item(){
 	this.init = function(r,x,y,id){
 		this.x = x;
 		this.y = y;
@@ -13,9 +13,6 @@ var Item = function(){
 	}
 
 	this.move = function(dir){
-		if( this.moving ){ return false; }
-		this.moving = true;
-
 		this.r.items[this.x][this.y] = undefined;
 
 		switch(dir){
@@ -33,43 +30,44 @@ var Item = function(){
 				break;
 		}
 
-
-		if( !keysDown[32] ){
-			this.dir = dir;
-		}
-
 		this.r.items[this.x][this.y] = this;
 		drawItem(this);
-
-		var p = this;
-		setTimeout(function(){
-			p.moving = false;
-			p.r.checkMove();
-		}, 200);
 	}
 
 	this.canMove = function(dir){
-		if( this.moving ){ return false; }
 		var atEdge = true;
-		var objAbove = true;
+		var objInWay = true;
 		switch(dir){
 			case 'u':
 				atEdge = this.y <= 1;
-				objAbove = typeof(this.r.items[this.x][this.y-1]);
+				objInWay = typeof(this.r.items[this.x][this.y-1]);
 				break;
 			case 'd':
 				atEdge = this.y >= this.r.y;
-				objAbove = typeof(this.r.items[this.x][this.y+1]);
+				objInWay = typeof(this.r.items[this.x][this.y+1]);
 				break;
 			case 'l':
 				atEdge = this.x <= 1;
-				objAbove = typeof(this.r.items[this.x-1][this.y]);
+				objInWay = typeof(this.r.items[this.x-1][this.y]);
 				break;
 			case 'r':
 				atEdge = this.x >= this.r.x;
-				objAbove = typeof(this.r.items[this.x+1][this.y]);
+				objInWay = typeof(this.r.items[this.x+1][this.y]);
 				break;
 		}
-		return !(atEdge || objAbove != 'undefined');
+		var heldItemCanMove = true;
+		if( keysDown[32] && this.getName() == 'player' && this.hasBoxInFront()){
+			if(this.dir == dir){
+				//This would be the box, so say it's not there, as it would be moving.
+				objInWay = 'undefined';
+				heldItemCanMove = this.boxCanMove(dir);
+			} else if( isOppDir(this.dir, dir) ){
+				//The box is going to where the player currently is
+				heldItemCanMove = true;
+			} else {
+				heldItemCanMove = this.boxCanMove(dir);
+			}
+		}
+		return !(atEdge || objInWay != 'undefined') && heldItemCanMove;
 	}
 }
