@@ -2,151 +2,216 @@
 	<head>
 		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 		<script>
-			var rooms = [];
+			var room;
+			var keysDown = [];
+			keysDown[32] = false;
+			keysDown[37] = false;
+			keysDown[38] = false;
+			keysDown[39] = false;
+			keysDown[40] = false;
+			var dirMap = [];
+			dirMap[37] = 'l';
+			dirMap[38] = 'u';
+			dirMap[39] = 'r';
+			dirMap[40] = 'd';
 
-			$(document).ready(function(){
+			var drawRoom = function(r){
 				$hold = $('#cargo-hold');
-				var drawRoom = function(r){
-					$hold.empty();
-					for( var i = 1; i <= r.x; i++ ){
-						$col = $('<ul />');
-						for( var j = 1; j <= r.y; j++ ){
-							$cell = $('<li />').attr('id', i + 'x' + j);
-							$col.append($cell);
-						}
-						$hold.append($col);
+				$hold.empty();
+				for( var i = 1; i <= r.x; i++ ){
+					$col = $('<ul />');
+					for( var j = 1; j <= r.y; j++ ){
+						$cell = $('<li />').attr('id', i + 'x' + j);
+						$col.append($cell);
 					}
-				};
-
-				var drawItem = function(p){
-					var $p = $('img#'+p.id);
-					var $cell = $('#'+p.x+'x'+p.y);
-					$p.attr('src', p.img());
-					$cell.append($p);
-				};
-
-				var cacheImg = function(src, id){
-					var i = $('<img />').attr('src', src).attr('id', id);
-					$('#cache').append(i);
-				};
-
-				var Item = function(){
-					this.init = function(r,x,y,id){
-						this.x = x;
-						this.y = y;
-						this.id = id;
-						this.r = r;
-
-						this.r.items[this.x][this.y] = this;
-
-						cacheImg(this.img(), this.id);
-						drawItem(this);
-					}
-
-					this.move = function(dir){
-						switch(dir){
-							case 'u':
-								this.y--;
-								break;
-							case 'd':
-								this.y++;
-								break;
-							case 'l':
-								this.x--;
-								break;
-							case 'r':
-								this.x++;
-								break;
-						}
-
-						drawItem(this);
-					}
-
-					this.canMove = function(dir){
-						var atEdge = true;
-						var objAbove = true;
-						switch(dir){
-							case 'u':
-								atEdge = this.y <= 1;
-								objAbove = typeof(this.r.items[this.x][this.y-1]) != 'undefined';
-								break;
-							case 'd':
-								atEdge = this.y >= this.r.y;
-								objAbove = typeof(this.r.items[this.x][this.y+1]) != 'undefined';
-								break;
-							case 'l':
-								atEdge = this.x <= 1;
-								objAbove = typeof(this.r.items[this.x-1][this.y]) != 'undefined';
-								break;
-							case 'r':
-								atEdge = this.x >= this.r.x;
-								objAbove = typeof(this.r.items[this.x+1][this.y]) != 'undefined';
-								break;
-						}
-						return !(atEdge || objAbove);
-					}
+					$hold.append($col);
 				}
+			};
 
-				var Player = function(r,x,y,id){
-					this.dir = 'east';
-					this.motion = 'stand';
-					this.holding = false;
-					this._moving = false;
+			var drawItem = function(p){
+				var $p = $('img#'+p.id);
+				var $cell = $('#'+p.x+'x'+p.y);
+				$p.attr('src', p.img());
+				$cell.append($p);
+			};
 
-					this.img = function(){
-						return '/imgs/hero/' + this.motion +'/'+ this.dir + '.gif';
-					}
+			var cacheImg = function(src, id){
+				var i = $('<img />').attr('src', src).attr('id', id);
+				$('#cache').append(i);
+			};
 
-					this.init(r,x,y,id);
-				}
-				Player.prototype = new Item();
-				Player.prototype.constructor = Player;
-
-				var Pillar = function(r,x,y,id){
-					this.img = function(){
-						return '/imgs/pillar.gif';
-					}
-					this.init(r,x,y,id);
-				}
-				Pillar.prototype = new Item();
-				Pillar.prototype.constructor = Pillar;
-
-				var Box = function(r,x,y,id){
-					this.img = function(){
-						return '/imgs/box.gif';
-					}
-					this.init(r,x,y,id);
-				}
-				Box.prototype = new Item();
-				Box.prototype.constructor = Box;
-
-				var Room = function(x,y){
+			var Item = function(){
+				this.init = function(r,x,y,id){
 					this.x = x;
 					this.y = y;
+					this.id = id;
+					this.r = r;
+					this.moving = false;
 
-					drawRoom(this);
+					this.r.items[this.x][this.y] = this;
 
-					this.items = [];
-					for( var i = 1; i <= this.x; i++ ){
-						this.items[i] = [];
+					cacheImg(this.img(), this.id);
+					drawItem(this);
+				}
+
+				this.move = function(dir){
+					if( this.moving ){ return false; }
+					this.moving = true;
+
+					this.r.items[this.x][this.y] = undefined;
+
+					switch(dir){
+						case 'u':
+							this.y--;
+							break;
+						case 'd':
+							this.y++;
+							break;
+						case 'l':
+							this.x--;
+							break;
+						case 'r':
+							this.x++;
+							break;
 					}
 
 
-					this.player = new Player(this,1,3,'p1');
-					this.boxes = [];
-					this.boxes.push(new Box(this,2,3,'b1'));
-					this.boxes.push(new Box(this,3,2,'b2'));
-					this.boxes.push(new Box(this,6,3,'b3'));
-					this.pillars = [];
-					this.pillars.push(new Pillar(this,3,3,'w1'));
-					this.pillars.push(new Pillar(this,6,5,'w2'));
-					this.pillars.push(new Pillar(this,5,5,'w3'));
+					if( !keysDown[32] ){
+						this.dir = dir;
+					}
 
+					this.r.items[this.x][this.y] = this;
+					drawItem(this);
 
+					var p = this;
+					setTimeout(function(){
+						p.moving = false;
+						p.r.checkMove();
+					}, 200);
 				}
 
-				var r1 = new Room(7,5);
-				rooms.push(r1);
+				this.canMove = function(dir){
+					if( this.moving ){ return false; }
+					var atEdge = true;
+					var objAbove = true;
+					switch(dir){
+						case 'u':
+							atEdge = this.y <= 1;
+							objAbove = typeof(this.r.items[this.x][this.y-1]);
+							break;
+						case 'd':
+							atEdge = this.y >= this.r.y;
+							objAbove = typeof(this.r.items[this.x][this.y+1]);
+							break;
+						case 'l':
+							atEdge = this.x <= 1;
+							objAbove = typeof(this.r.items[this.x-1][this.y]);
+							break;
+						case 'r':
+							atEdge = this.x >= this.r.x;
+							objAbove = typeof(this.r.items[this.x+1][this.y]);
+							break;
+					}
+					return !(atEdge || objAbove != 'undefined');
+				}
+			}
+
+			var Player = function(r,x,y,id){
+				this.dir = 'r';
+				this.motion = 'stand';
+				this.holding = false;
+
+				this.img = function(){
+					return '/imgs/hero/' + this.motion +'/'+ this.dir + '.gif';
+				}
+
+				this.init(r,x,y,id);
+			}
+			Player.prototype = new Item();
+			Player.prototype.constructor = Player;
+
+			var Pillar = function(r,x,y,id){
+				this.img = function(){
+					return '/imgs/pillar.gif';
+				}
+				this.canMove = function(dir){return false;}
+				this.init(r,x,y,id);
+			}
+			Pillar.prototype = new Item();
+			Pillar.prototype.constructor = Pillar;
+
+			var Box = function(r,x,y,id){
+				this.img = function(){
+					return '/imgs/box.gif';
+				}
+				this.init(r,x,y,id);
+			}
+			Box.prototype = new Item();
+			Box.prototype.constructor = Box;
+
+			var Room = function(x,y){
+				this.x = x;
+				this.y = y;
+
+				drawRoom(this);
+
+				this.items = [];
+				this.items[0] = [];
+				for( var i = 1; i <= this.x; i++ ){
+					this.items[i] = [];
+				}
+				this.items[x+1] = [];
+
+
+				this.player = new Player(this,1,3,'p1');
+				this.boxes = [];
+				this.boxes.push(new Box(this,2,3,'b1'));
+				this.boxes.push(new Box(this,3,2,'b2'));
+				this.boxes.push(new Box(this,6,3,'b3'));
+				this.pillars = [];
+				this.pillars.push(new Pillar(this,3,3,'w1'));
+				this.pillars.push(new Pillar(this,6,5,'w2'));
+				this.pillars.push(new Pillar(this,5,5,'w3'));
+
+				this.checkMove = function(){
+					if( this.player.moving ){ return false; }
+					var rm = this;
+					$.each([37,38,39,40,0], function(i,v){
+						if( keysDown[v] ){
+							if( rm.player.canMove(dirMap[v]) ){
+								rm.player.move(dirMap[v]);
+								return false;
+							} else {
+								if( !keysDown[32] ){
+									rm.player.dir = dirMap[v];
+									drawItem(rm.player);
+								}
+							}
+						}
+					});
+				};
+
+			}
+
+			$(document).ready(function(){
+				room = new Room(7,5);
+			});
+
+			// l 37, u 38, r 39, d 40, space 32
+			$(document).keydown(function(e){
+				if([37,38,39,40,32].indexOf(e.which) > -1){
+					keysDown[e.which] = true;
+					e.preventDefault();
+					if(e.which != 32 && !room.player.moving ){
+						room.checkMove();
+					}
+				}
+			});
+			$(document).keyup(function(e){
+				if([37,38,39,40,32].indexOf(e.which) > -1){
+					keysDown[e.which] = false;
+					e.preventDefault();
+				}
 			});
 		</script>
 
