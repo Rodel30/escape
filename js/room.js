@@ -9,6 +9,7 @@ var Room = function(rm){
 
 	this.finish = function(){
 		this._finished = true;
+		$('#nextlvl').show();
 	};
 
 	this.items = [];

@@ -2,13 +2,8 @@
 	<head>
 		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 		<script src="js/support.js"></script>
+		<script src="js/rooms.js"></script>
 		<script>
-			var rm1 = { 'boxes': [[2,2]],
-				'pillars': [[1,1],[1,3],[2,1]],
-				'exit': [3,2],
-				'dim': [3,3],
-				'spawn': [1,2]
-			};
 			var room;
 			var keysDown = [];
 			keysDown[32] = false;
@@ -37,6 +32,8 @@
 						break;
 				}
 			}
+
+			var curLevel = 0;
 		</script>
 		<script src="js/renderer.js"></script>
 		<script src="js/item.js"></script>
@@ -46,7 +43,23 @@
 		<script src="js/room.js"></script>
 		<script>
 			$(document).ready(function(){
-				room = new Room(rm1);
+				room = new Room(rooms[0]);
+
+				$('#reset').click(function(){
+					room = new Room(rooms[curLevel]);
+				});
+
+				$('#nextlvl').click(function(){
+					curLevel++;
+					if( typeof(rooms[curLevel]) != 'undefined'){
+						room = new Room(rooms[curLevel]);
+					} else {
+						$('#endoflvls').show();
+					}
+					$(this).hide();
+				}).hide();
+
+				$('#endoflvls').hide();
 			});
 
 			// l 37, u 38, r 39, d 40, space 32
@@ -68,6 +81,9 @@
 		</script>
 
 		<style>
+			#cargo-hold {
+				clear: both;
+			}
 			#cargo-hold ul {
 				list-style: none;
 				float: left;
@@ -94,11 +110,29 @@
 				background: url(imgs/exit.gif);
 				background-size: 100% 100%;
 			}
+
+			#menu {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			#menu li {
+				float: left;
+				margin-right: 10px;
+			}
+			#menu li.link {
+				cursor: pointer;
+			}
 		</style>
 	</head>
 	<body>
 		<h1>Escape!</h1>
 		<p>Use arrows to move, and the Space bar to grab on to the box in front of you.</p>
+		<ul id="menu">
+			<li id="reset" class="link">Reset</li>
+			<li id="nextlvl" class="link">Next Level</li>
+			<li id="endoflvls">You've completed all the levels that we currently have! Check back later for more.</li>
+		</ul>
 		<div id="cargo-hold"></div>
 		<div id="cache"></div>
 	</body>
