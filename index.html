@@ -1,7 +1,6 @@
 <html>
 	<head>
 		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
-		<script src="js/support.js"></script>
 		<script src="js/rooms.js"></script>
 		<script>
 			var room;
@@ -76,6 +75,11 @@
 				if([37,38,39,40,32].indexOf(e.which) > -1){
 					keysDown[e.which] = false;
 					e.preventDefault();
+				}
+			});
+			$(document).keypress(function(e){
+				if(e.which == 13 && $('#nextlvl').is(':visible') ){
+					$('#nextlvl').click();
 				}
 			});
 		</script>
