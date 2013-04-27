@@ -38,7 +38,7 @@ var Player = function player(r,x,y,id){
 	};
 
 	this.img = function(){
-		return '/imgs/hero/' + this.motion +'/'+ this.dir + '.gif';
+		return 'imgs/hero/' + this.motion +'/'+ this.dir + '.gif';
 	};
 
 	this.move = function(dir){

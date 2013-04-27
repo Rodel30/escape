@@ -1,6 +1,6 @@
 var Box = function box(r,x,y,id){
 	this.img = function(){
-		return '/imgs/box.gif';
+		return 'imgs/box.gif';
 	}
 	this.init(r,x,y,id);
 }
