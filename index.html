@@ -2,132 +2,16 @@
 	<head>
 		<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 		<script src="js/rooms.js"></script>
-		<script>
-			var room;
-			var keysDown = [];
-			keysDown[32] = false;
-			keysDown[37] = false;
-			keysDown[38] = false;
-			keysDown[39] = false;
-			keysDown[40] = false;
-			var dirMap = [];
-			dirMap[37] = 'l';
-			dirMap[38] = 'u';
-			dirMap[39] = 'r';
-			dirMap[40] = 'd';
-			var isOppDir = function(d1, d2){
-				switch(d1){
-					case 'u':
-						return d2 == 'd';
-						break;
-					case 'd':
-						return d2 == 'u';
-						break;
-					case 'l':
-						return d2 == 'r';
-						break;
-					case 'r':
-						return d2 == 'l';
-						break;
-				}
-			}
-
-			var curLevel = 0;
-		</script>
+		<script src="js/config.js"></script>
 		<script src="js/renderer.js"></script>
 		<script src="js/item.js"></script>
 		<script src="js/player.js"></script>
 		<script src="js/pillar.js"></script>
 		<script src="js/box.js"></script>
 		<script src="js/room.js"></script>
-		<script>
-			$(document).ready(function(){
-				room = new Room(rooms[0]);
+		<script src="js/control-binding.js"></script>
 
-				$('#reset').click(function(){
-					room = new Room(rooms[curLevel]);
-				});
-
-				$('#nextlvl').click(function(){
-					if( typeof(rooms[curLevel+1]) != 'undefined'){
-						curLevel++;
-						room = new Room(rooms[curLevel]);
-					} else {
-						$('#endoflvls').show();
-					}
-					$(this).hide();
-				}).hide();
-
-				$('#endoflvls').hide();
-			});
-
-			// l 37, u 38, r 39, d 40, space 32
-			$(document).keydown(function(e){
-				if([37,38,39,40,32].indexOf(e.which) > -1){
-					keysDown[e.which] = true;
-					e.preventDefault();
-					if(e.which != 32 && !room.player.moving ){
-						room.checkMove();
-					}
-				}
-			});
-			$(document).keyup(function(e){
-				if([37,38,39,40,32].indexOf(e.which) > -1){
-					keysDown[e.which] = false;
-					e.preventDefault();
-				}
-			});
-			$(document).keypress(function(e){
-				if(e.which == 13 && $('#nextlvl').is(':visible') ){
-					$('#nextlvl').click();
-				}
-			});
-		</script>
-
-		<style>
-			#cargo-hold {
-				clear: both;
-			}
-			#cargo-hold ul {
-				list-style: none;
-				float: left;
-				margin: 0;
-				padding: 0;
-				background: url(imgs/floor.gif);
-			}
-			#cargo-hold ul li {
-				padding:0;
-				margin:0;
-			}
-			#cargo-hold ul li, img {
-				height: 40px;
-				width: 40px;
-			}
-
-			#cache {
-				height: 0px;
-				width: 0px;
-				overflow: hidden;
-			}
-
-			li.exit {
-				background: url(imgs/exit.gif);
-				background-size: 100% 100%;
-			}
-
-			#menu {
-				list-style: none;
-				margin: 0;
-				padding: 0;
-			}
-			#menu li {
-				float: left;
-				margin-right: 10px;
-			}
-			#menu li.link {
-				cursor: pointer;
-			}
-		</style>
+		<link rel='stylesheet' href='main.css' />
 	</head>
 	<body>
 		<h1>Escape!</h1>
