@@ -3,38 +3,38 @@ var Player = function player(r,x,y,id){
 	this.motion = 'stand';
 	this.holding = false;
 
-	this.boxCanMove = function(dir){
-		return this.boxInFront().canMove(dir);
+	this.reflectorCanMove = function(dir){
+		return this.reflectorInFront().canMove(dir);
 	};
 
-	this.boxInFront = function(){
-		var boxX = this.x;
-		var boxY = this.y;
+	this.reflectorInFront = function(){
+		var reflectorX = this.x;
+		var reflectorY = this.y;
 		switch(this.dir){
 			case 'u':
-				boxY--;
+				reflectorY--;
 				break;
 			case 'd':
-				boxY++;
+				reflectorY++;
 				break;
 			case 'l':
-				boxX--;
+				reflectorX--;
 				break;
 			case 'r':
-				boxX++;
+				reflectorX++;
 				break;
 		}
 
-		var infront = this.r.items[boxX][boxY];
-		if( typeof(infront) != 'undefined' && infront.getName() == 'box' ){
+		var infront = this.r.items[reflectorX][reflectorY];
+		if( typeof(infront) != 'undefined' && infront.getName() == 'reflector' ){
 			return infront;
 		} else {
 			return undefined;
 		}
 	};
 
-	this.hasBoxInFront = function(){
-		return typeof(this.boxInFront()) != 'undefined';
+	this.hasReflectorInFront = function(){
+		return typeof(this.reflectorInFront()) != 'undefined';
 	};
 
 	this.img = function(){
@@ -49,8 +49,8 @@ var Player = function player(r,x,y,id){
 
 		if( !keysDown[32] ){
 			this.dir = dir;
-		} else if( this.hasBoxInFront() ){
-			this.boxInFront().move(dir);
+		} else if( this.hasReflectorInFront() ){
+			this.reflectorInFront().move(dir);
 		}
 
 		switch(dir){

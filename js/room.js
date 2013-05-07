@@ -21,10 +21,10 @@ var Room = function(rm){
 
 
 	this.player = new Player(this,rm.spawn[0],rm.spawn[1],'p1');
-	this.boxes = [];
+	this.reflectors = [];
 	var _this = this;
-	$.each(rm.boxes, function(i,b){
-		_this.boxes.push(new Box(_this,b[0],b[1],'b'+i));
+	$.each(rm.reflectors, function(i,b){
+		_this.reflectors.push(new Reflector(_this,b[0],b[1],'b'+i));
 	});
 	this.walls = [];
 	$.each(rm.walls, function(i,w){

@@ -56,16 +56,16 @@ var Item = function item(){
 				break;
 		}
 		var heldItemCanMove = true;
-		if( keysDown[32] && this.getName() == 'player' && this.hasBoxInFront()){
+		if( keysDown[32] && this.getName() == 'player' && this.hasReflectorInFront()){
 			if(this.dir == dir){
-				//This would be the box, so say it's not there, as it would be moving.
+				//This would be the reflector, so say it's not there, as it would be moving.
 				objInWay = 'undefined';
-				heldItemCanMove = this.boxCanMove(dir);
+				heldItemCanMove = this.reflectorCanMove(dir);
 			} else if( isOppDir(this.dir, dir) ){
-				//The box is going to where the player currently is
+				//The reflector is going to where the player currently is
 				heldItemCanMove = true;
 			} else {
-				heldItemCanMove = this.boxCanMove(dir);
+				heldItemCanMove = this.reflectorCanMove(dir);
 			}
 		}
 		return !(atEdge || objInWay != 'undefined') && heldItemCanMove;
