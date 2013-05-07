@@ -26,9 +26,9 @@ var Room = function(rm){
 	$.each(rm.boxes, function(i,b){
 		_this.boxes.push(new Box(_this,b[0],b[1],'b'+i));
 	});
-	this.pillars = [];
-	$.each(rm.pillars, function(i,w){
-		_this.pillars.push(new Pillar(_this,w[0],w[1],'w'+i));
+	this.walls = [];
+	$.each(rm.walls, function(i,w){
+		_this.walls.push(new Wall(_this,w[0],w[1],'w'+i));
 	});
 
 	this.checkMove = function(){
