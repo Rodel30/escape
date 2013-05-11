@@ -24,7 +24,12 @@ var Room = function(rm){
 	this.reflectors = [];
 	var _this = this;
 	$.each(rm.reflectors, function(i,b){
-		_this.reflectors.push(new Reflector(_this,b[0],b[1],b[2],'b'+i));
+		_this.reflectors.push(new Reflector(_this,b[0],b[1],b[2],'r'+i));
+	});
+	this.boxes = [];
+	var _this = this;
+	$.each(rm.boxes, function(i,b){
+		_this.boxes.push(new Box(_this,b[0],b[1],'b'+i));
 	});
 	this.walls = [];
 	$.each(rm.walls, function(i,w){

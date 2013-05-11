@@ -56,16 +56,16 @@ var Item = function item(){
 				break;
 		}
 		var heldItemCanMove = true;
-		if( keysDown[32] && this.getName() == 'player' && this.hasReflectorInFront()){
+		if( keysDown[32] && this.getName() == 'player' && this.hasMovableItemInFront()){
 			if(this.dir == dir){
-				//This would be the reflector, so say it's not there, as it would be moving.
+				//This would be the movable item, so say it's not there, as it would be moving.
 				objInWay = 'undefined';
-				heldItemCanMove = this.reflectorCanMove(dir);
+				heldItemCanMove = this.movableItemCanMove(dir);
 			} else if( isOppDir(this.dir, dir) ){
-				//The reflector is going to where the player currently is
+				//The movable item is going to where the player currently is
 				heldItemCanMove = true;
 			} else {
-				heldItemCanMove = this.reflectorCanMove(dir);
+				heldItemCanMove = this.movableItemCanMove(dir);
 			}
 		}
 		return !(atEdge || objInWay != 'undefined') && heldItemCanMove;
@@ -75,6 +75,10 @@ var Item = function item(){
 		var funcNameRegex = /function (.{1,})\(/;
 		var results = (funcNameRegex).exec((this).constructor.toString());
 		return (results && results.length > 1) ? results[1] : "";
+	};
+
+	this.isMovable = function(){
+		return false;
 	};
 
 	this.locationInDirection = function(dir,loc){
