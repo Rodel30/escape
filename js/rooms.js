@@ -66,5 +66,14 @@ var rooms = [
 		'spawn': [1,2],
 		'lasers': [[1,1,'r']],
 		'exit': [5,3]
+	},
+	{ 'reflectors': [[5,3,1]],
+		'boxes': [[5,1]],
+		'walls': [[4,1],[4,2],[4,4]],
+		'targets': [[7,3]],
+		'dim': [7,4],
+		'spawn': [2,2],
+		'lasers': [[1,1,'d']],
+		'exit': [7,4]
 	}
 ];
