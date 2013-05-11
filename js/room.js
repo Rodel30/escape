@@ -21,13 +21,17 @@ var Room = function(rm){
 
 
 	this.player = new Player(this,rm.spawn[0],rm.spawn[1],'p1');
-	this.reflectors = [];
 	var _this = this;
+
+	$.each(['reflectors','boxes','walls','lasers','targets'], function(i,a){
+		rm[a] = rm[a] || [];
+	});
+
+	this.reflectors = [];
 	$.each(rm.reflectors, function(i,b){
 		_this.reflectors.push(new Reflector(_this,b[0],b[1],b[2],'r'+i));
 	});
 	this.boxes = [];
-	var _this = this;
 	$.each(rm.boxes, function(i,b){
 		_this.boxes.push(new Box(_this,b[0],b[1],'b'+i));
 	});
