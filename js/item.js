@@ -76,4 +76,24 @@ var Item = function item(){
 		var results = (funcNameRegex).exec((this).constructor.toString());
 		return (results && results.length > 1) ? results[1] : "";
 	};
+
+	this.locationInDirection = function(dir,loc){
+		var x = loc[0],
+			y = loc[1];
+		switch(dir){
+			case 'u':
+				y--;
+				break;
+			case 'd':
+				y++;
+				break;
+			case 'l':
+				x--;
+				break;
+			case 'r':
+				x++;
+				break;
+		};
+		return [x,y];
+	};
 }

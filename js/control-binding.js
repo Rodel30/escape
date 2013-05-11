@@ -35,7 +35,11 @@ $(document).keyup(function(e){
 	}
 });
 $(document).keypress(function(e){
-	if(e.which == 13 && $('#nextlvl').is(':visible') ){
-		$('#nextlvl').click();
+	if(e.which == 13){
+		if( $('#nextlvl').is(':visible') ){
+			$('#nextlvl').click();
+		} else if( $('#dead').is(':visible') ){
+			$('#reset').click();
+		}
 	}
 });

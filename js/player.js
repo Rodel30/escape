@@ -53,23 +53,14 @@ var Player = function player(r,x,y,id){
 			this.reflectorInFront().move(dir);
 		}
 
-		switch(dir){
-			case 'u':
-				this.y--;
-				break;
-			case 'd':
-				this.y++;
-				break;
-			case 'l':
-				this.x--;
-				break;
-			case 'r':
-				this.x++;
-				break;
-		};
+		var locInDir = this.locationInDirection(dir, [this.x,this.y]);
+		this.x = locInDir[0];
+		this.y = locInDir[1];
 
 		this.r.items[this.x][this.y] = this;
 		drawItem(this);
+
+		this.r.drawLasers();
 
 		var p = this;
 		setTimeout(function(){

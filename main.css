@@ -12,6 +12,7 @@
 #cargo-hold ul li {
 	padding:0;
 	margin:0;
+	position: relative;
 }
 #cargo-hold ul li, img {
 	height: 40px;
@@ -25,8 +26,12 @@
 }
 
 li.exit {
-	background: url(imgs/exit.gif);
+	background-image: url(imgs/exit.gif);
 	background-size: 100% 100%;
+}
+
+li.exit.on {
+	background-image: url(imgs/exit-on.gif);
 }
 
 #menu {
@@ -40,4 +45,11 @@ li.exit {
 }
 #menu li.link {
 	cursor: pointer;
+}
+
+.laser {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 50;
 }

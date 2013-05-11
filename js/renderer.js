@@ -9,7 +9,7 @@ var drawRoom = function(r){
 		}
 		$hold.append($col);
 	}
-	$('#'+r.ex +'x'+ r.ey).addClass('exit');
+	$('#'+r.exit.x +'x'+ r.exit.y).addClass('exit');
 };
 
 var drawItem = function(p){
@@ -17,9 +17,21 @@ var drawItem = function(p){
 	var $cell = $('#'+p.x+'x'+p.y);
 	$p.attr('src', p.img());
 	$cell.append($p);
+
+	if(p.getName() == 'laser'){
+		p.calcPath();
+		$('img[id^="'+p.id+'l"]').remove();
+		$.each(p.path, function(i,l){
+			var $cell = $('#'+l.x+'x'+l.y);
+			var $l = cacheImg('imgs/laser-'+l.i+'.gif', p.id+'l'+i);
+			$l.addClass('laser');
+			$cell.append($l);
+		});
+	}
 };
 
 var cacheImg = function(src, id){
 	var i = $('<img />').attr('src', src).attr('id', id);
 	$('#cache').append(i);
+	return i;
 };
