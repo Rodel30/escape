@@ -94,4 +94,5 @@ var Room = function(rm){
 		$('#dead').show();
 	};
 
+	this.drawLasers();
 }
